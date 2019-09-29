@@ -102,8 +102,15 @@ describe('ComplaintEditComponent', () => {
       expect(imageUrlInput.value).toBe('');
     });
 
-    it('should only be submitted if form is valid - TODO', () => {
-      // TODO
+    it('should only be submitted if form is valid', () => {
+      expect(submitButton.disabled).toBe(true);
+
+      writeValue(nameInput, newComplaint.name);
+      expect(submitButton.disabled).toBe(true);
+      writeValue(emailInput, newComplaint.email);
+      expect(submitButton.disabled).toBe(true);
+      writeValue(subjectInput, newComplaint.subject);
+      expect(submitButton.disabled).toBe(false);
     });
 
     it('should save the complaint', () => {

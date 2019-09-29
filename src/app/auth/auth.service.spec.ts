@@ -60,7 +60,7 @@ describe('AuthService', () => {
     expect(service.isLoggedIn()).toBe(true);
   });
 
-  it('should log in and store user credentials - TODO', () => {
+  it('should log in and store user credentials', () => {
     const service: AuthService = TestBed.get(AuthService);
     const httpTestingController = TestBed.get(HttpTestingController);
 

@@ -42,7 +42,11 @@ describe('ComplaintListComponent', () => {
     });
 
     it('should load complaints', () => {
-      // TODO
+      expect(component.complaints).not.toBeDefined();
+
+      component.ngOnInit();
+
+      expect(component.complaints).toEqual(complaints);
     });
 
   });

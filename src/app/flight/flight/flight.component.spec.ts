@@ -61,6 +61,23 @@ describe('FlightComponent', () => {
   });
 
   it('should display flight details correctly', () => {
-    // TODO
+    expect(fixture.nativeElement.querySelector('#flightNumber').textContent).toBe(flight.flightNumber);
+    expect(fixture.nativeElement.querySelector('#status').textContent).toBe(flight.status);
+    expect(fixture.nativeElement.querySelector('#comment').textContent).toBe(flight.comment);
+    expect(fixture.nativeElement.querySelector('#delay').textContent).toBe(flight.delay.toString());
+
+    const fromFixture = fixture.debugElement.query(By.css('#from'))
+      .injector.get<FlightStopDetailsStubComponent>(FlightStopDetailsStubComponent);
+    expect(fromFixture.airportCode).toBe(flight.departureCode);
+    expect(fromFixture.airportName).toBe(flight.departure);
+    expect(fromFixture.city).toBe(flight.departureCity);
+    expect(fromFixture.time).toBe(flight.departureTime);
+
+    const toFixture = fixture.debugElement.query(By.css('#to'))
+      .injector.get<FlightStopDetailsStubComponent>(FlightStopDetailsStubComponent);
+    expect(toFixture.airportCode).toBe(flight.arrivalCode);
+    expect(toFixture.airportName).toBe(flight.arrival);
+    expect(toFixture.city).toBe(flight.arrivalCity);
+    expect(toFixture.time).toBe(flight.arrivalTime);
   });
 });

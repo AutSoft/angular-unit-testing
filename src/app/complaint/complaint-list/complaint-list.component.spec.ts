@@ -1,8 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component } from '@angular/core';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ComplaintListComponent } from './complaint-list.component';
 import { ComplaintService } from '../complaint.service';
 import { Complaint } from '../complaint';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { MatCardModule, MatIconModule, MatButtonModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
@@ -10,6 +11,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 
 describe('ComplaintListComponent', () => {
+  @Component({ selector: 'szia-stub', template: '' })
+  class StubComponent {}
+
   let component: ComplaintListComponent;
   const complaints: Complaint[] = [
     {
@@ -53,6 +57,7 @@ describe('ComplaintListComponent', () => {
 
   describe('with view', () => {
     let fixture: ComponentFixture<ComplaintListComponent>;
+    const routes = [{ path: 'edit', component: StubComponent }, { path: 'edit/:id', component: StubComponent }];
 
     beforeEach(() => {
       const complaintService = { getComplaints: () => of(complaints) };
@@ -65,9 +70,9 @@ describe('ComplaintListComponent', () => {
           FlexLayoutModule,
           MatButtonModule,
           FormsModule,
-          RouterTestingModule
+          RouterTestingModule.withRoutes(routes)
         ],
-        declarations: [ComplaintListComponent],
+        declarations: [ComplaintListComponent, StubComponent],
         providers: [{ provide: ComplaintService, useValue: complaintService }]
       }).compileComponents();
     });
@@ -78,21 +83,36 @@ describe('ComplaintListComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should list the complaints - TODO', () => {
-      // TODO
+    it('should list the complaints', () => {
+      expect(fixture.nativeElement.querySelectorAll('mat-card').length).toBe(complaints.length);
     });
 
-    it('should display the first complaint correctly - TODO', () => {
-      // TODO
+    it('should display the first complaint correctly', () => {
+      const nativeElement = fixture.nativeElement;
+      const complaint = complaints[0];
+
+      expect(nativeElement.querySelector('#subject').textContent).toBe(complaint.subject);
+      expect(nativeElement.querySelector('#name').textContent).toBe(complaint.name);
+      expect(nativeElement.querySelector('#email').textContent).toBe(complaint.email);
+      expect(nativeElement.querySelector('#phoneNumber').textContent).toBe(complaint.phoneNumber);
+      expect(nativeElement.querySelector('img').height).not.toBe(0);
     });
 
-    it('should navigate to the new complaint page - TODO', () => {
-      // TODO
-    });
+    it('should navigate to the new complaint page', fakeAsync(() => {
+      const button: HTMLButtonElement = fixture.nativeElement.querySelector('[mat-fab]');
+      button.click();
+      tick();
+      const location: Location = TestBed.get(Location);
+      expect(location.path()).toEqual('/edit');
+    }));
 
-    it('should navigate to the complaint edit page - TODO', () => {
-      // TODO
-    });
+    it('should navigate to the complaint edit page', fakeAsync(() => {
+      const button: HTMLButtonElement = fixture.nativeElement.querySelector('[mat-button]');
+      button.click();
+      tick();
+      const location: Location = TestBed.get(Location);
+      expect(location.path()).toEqual(`/edit?id=${complaints[0].id}`);
+    }));
   });
 
 });
